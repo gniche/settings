@@ -1,0 +1,58 @@
+[http]
+	sslVerify = false
+[core]
+	autocrlf = true
+	hooksPath = ~/.githooks
+[alias]
+	alias = !git config -l | grep alias | cut -c 7-
+	snap = !git stash save 'snapshot: $(date)' && git stash apply 'stash@{0}'
+	ours = "!f() { git checkout --ours $@ && git add $@; }; f"
+	theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+	me=config user.name #
+	#apply named stash
+	apst = "!f() { \
+	  if [ \"$1\" ]; then \
+	    echo \"applying stash: $@\" ; \
+	    git stash apply `git stash list | grep -oPm1 \"(.*)(?=:.*:.*$1.*)\"`; \
+	  else echo \"unknown stash\"; \
+	  fi; }; f"
+    #apply named stash
+	rmst = "!f() { \
+	  if [ \"$1\" ]; then \
+	    echo \"removing stash: $@\" \
+	    && git stash show -p `git stash list | grep -oPm1 \"(.*)(?=:.*:.*$1.*)\"` | git apply -R; \
+	  else echo \"unknown stash\"; \
+	  fi; }; f"
+	test = "!f() { echo \"Calling $@ for all git repos in $PWD \"; }; f"
+	all="!f() { for i in *; do if [ -d $i/.git ]; then (cd $i; echo -e \"\\nIn $i...\"; eval \"git $@\";) fi; done; }; f"
+	ab=for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname 
+
+	co=checkout
+	cod=checkout develop
+	this = "rev-parse --abbrev-ref HEAD"
+	pushit = "!f (){ if [ \"$1\" ]; then git m $1; fi; git push --set-upstream origin `git this` ; }; f"
+	ticket = "!git this | grep -oP \"([A-z]+-[0-9]+)((?=[-:\\s])|(?!.))\""
+	m = "!f() { git commit -m \"`git ticket` $@\"; }; f"
+	
+	rmprev = "git branch -D @{-1}"
+	prev = "checkout @{-1}"	
+	fb= "!f() { git branch -a | grep $@; }; f" #find branch
+	mb="!f() { git ab | grep \"`git me`\"; }; f"
+	fmb= "!f() { git mb | grep \"$@\"; }; f" #find my branch
+	fitch=fetch
+	blam="! echo blam blam blam"
+	bm=branch -m
+	s=status
+	ss=status -s
+	pod=pull origin develop
+	rh=reset --hard
+	s=status
+	drop=reset HEAD -- 
+	mini=!f() { git status | grep }; f
+	num=!f() { git status | grep ''}; f
+	lgrep=log --all --grep='$1'
+	a=add
+	repackh=repack -a -d -f --depth=250 --window=250
+	gcp=gc --prune=now
+	brute=push --force
+	fpushit="!f (){ if [ \"$1\" ]; then git m $1; fi; git push --force --set-upstream origin `git this` ; }; f"
