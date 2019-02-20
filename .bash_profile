@@ -7,6 +7,7 @@ alias wsl="cd $WRKSPC/WebSphereCommerceServerExtensionsLogic"
 alias update="(cd $WCD && git all pull; ws && git all pull)"
 alias develop="git checkout develop"
 alias clean="clear && clear"
+alias fullup="(ws git all rh && git all cod && update)"
 
 #Remove all merged branches
 alias rmrged="git for-each-ref --format '%(refname:short)' refs/heads | grep -v master | grep -v develop | xargs git branch -D"

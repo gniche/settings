@@ -60,3 +60,9 @@
 	brute=push --force
 	fpushit="!f (){ if [ \"$1\" ]; then git m $1; fi; git push --force --set-upstream origin `git this` ; }; f"
 	housekeeping=!git remote prune origin && git gc
+	rb=rebase
+	rbi="!f() { git rebase -i HEAD~$1 ; }; f"
+	coh=checkout HEAD
+	listCommit=diff-tree --no-commit-id --name-only -r
+	cp=cherry-pick
+	ch=cherry
