@@ -5,6 +5,9 @@
 	hooksPath = ~/.githooks
 [credential]
 	helper = wincred
+[user]
+	name = Gino Giuliani
+	email = gino.giuliani@ynap.com
 [alias]
 	alias = !git config -l | grep alias | cut -c 7-
 	snap = !git stash save 'snapshot: $(date)' && git stash apply 'stash@{0}'
@@ -27,7 +30,7 @@
 	  fi; }; f"
 	test = "!f() { echo \"Calling $@ for all git repos in $PWD \"; }; f"
 	all="!f() { for i in *; do if [ -d $i/.git ]; then (cd $i; echo -e \"\\nIn $i...\"; eval \"git $@\";) fi; done; }; f"
-	ab=for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname 
+	ab=for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname
 
 	co=checkout
 	cod=checkout develop
@@ -35,9 +38,9 @@
 	pushit = "!f (){ if [ \"$1\" ]; then git m $1; fi; git push --set-upstream origin `git this` ; }; f"
 	ticket = "!git this | grep -oP \"([A-z]+-[0-9]+)((?=[-:\\s])|(?!.))\""
 	m = "!f() { git commit -m \"`git ticket` $@\"; }; f"
-	
+
 	rmprev = "git branch -D @{-1}"
-	prev = "checkout @{-1}"	
+	prev = "checkout @{-1}"
 	fb= "!f() { git branch -a | grep $@; }; f" #find branch
 	mb="!f() { git ab | grep \"`git me`\"; }; f"
 	fmb= "!f() { git mb | grep \"$@\"; }; f" #find my branch
@@ -49,7 +52,7 @@
 	pod=pull origin develop
 	rh=reset --hard
 	s=status
-	drop=reset HEAD -- 
+	drop=reset HEAD --
 	mini=!f() { git status | grep }; f
 	num=!f() { git status | grep ''}; f
 	lgrep=log --all --grep='$1'
@@ -66,3 +69,9 @@
 	listCommit=diff-tree --no-commit-id --name-only -r
 	cp=cherry-pick
 	ch=cherry
+	merged="!f () { git branch --merged | egrep -v '(^\\*|master|dev)' ; }; f"
+	delete-local="!f () { git merged | xargs git branch -D | git housekeeping; }; f"
+	squash="!f () { git reset --soft HEAD~$1 &&	git commit --all --amend --no-edit ; }; f"
+	last-commit = rev-parse HEAD
+	lcd = log -1 --oneline --name-status
+	root = rev-parse --show-toplevel
