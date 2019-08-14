@@ -75,3 +75,4 @@
 	last-commit = rev-parse HEAD
 	lcd = log -1 --oneline --name-status
 	root = rev-parse --show-toplevel
+
