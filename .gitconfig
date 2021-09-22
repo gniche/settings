@@ -15,23 +15,12 @@
 	theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
 	me=config user.name #
 	#apply named stash
-	apst = "!f() { \
-	  if [ \"$1\" ]; then \
-	    echo \"applying stash: $@\" ; \
-	    git stash apply `git stash list | grep -oPm1 \"(.*)(?=:.*:.*$1.*)\"`; \
-	  else echo \"unknown stash\"; \
-	  fi; }; f"
+	apst = "!f() { if [ \"$1\" ]; then echo \"applying stash: $@\" ; git stash apply `git stash list | grep -oPm1 \"(.*)(?=:.*:.*$1.*)\"`; else echo \"unknown stash\"; fi; }; f"
     #apply named stash
-	rmst = "!f() { \
-	  if [ \"$1\" ]; then \
-	    echo \"removing stash: $@\" \
-	    && git stash show -p `git stash list | grep -oPm1 \"(.*)(?=:.*:.*$1.*)\"` | git apply -R; \
-	  else echo \"unknown stash\"; \
-	  fi; }; f"
+	rmst = "!f() { if [ \"$1\" ]; then echo \"removing stash: $@\" && git stash show -p `git stash list | grep -oPm1 \"(.*)(?=:.*:.*$1.*)\"` | git apply -R; else echo \"unknown stash\"; fi; }; f"
 	test = "!f() { echo \"Calling $@ for all git repos in $PWD \"; }; f"
 	all="!f() { for i in *; do if [ -d $i/.git ]; then (cd $i; echo -e \"\\nIn $i...\"; eval \"git $@\";) fi; done; }; f"
 	ab=for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname
-
 	co=checkout
 	cod=checkout develop
 	this = "rev-parse --abbrev-ref HEAD"
@@ -75,4 +64,7 @@
 	last-commit = rev-parse HEAD
 	lcd = log -1 --oneline --name-status
 	root = rev-parse --show-toplevel
-
+	reclone ="!f () { REPO_PATH=$(pwd) && GIT_URL=$(git config --get remote.origin.url) && cd .. && rm -rf $REPO_PATH && git clone --recursive $GIT_URL $REPO_PATH && cd $REPO_PATH ; }; f"
+	reclone ="!f () { GIT_URL=$(git config --get remote.origin.url) && rm -rf .* * 2>&- && git clone $GIT_URL $(pwd) ; }; f"
+	#reclone ="!f () { GIT_URL=$(git config --get remote.origin.url) && echo $GIT_URL && git clone $GIT_URL $(pwd) ; }; f"
+	#reclone ="!f () { rm -rf * && git clone --recursive `git config --get remote.origin.url`; }; f"
